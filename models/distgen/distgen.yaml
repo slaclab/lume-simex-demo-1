@@ -1,0 +1,29 @@
+n_particle: 100000
+random_type: hammersley
+
+start:
+  type: cathode
+  MTE:
+    units: meV
+    value: 184 # 511 (0.6^2) meV, corresponds to 0.6 um/mm
+    
+total_charge:
+  units: pC
+  value: 100
+
+r_dist:
+  type: radial_uniform
+  max_r:
+    units: mm
+    value: 0.7215519881062172
+  
+t_dist:
+  type: gaussian
+  avg_t:
+    units: ps
+    value: 0
+  sigma_t:
+    units: ps
+    value: 7.433706674061527
+  n_sigma_cutoff: 3
+  
