@@ -1,0 +1,73 @@
+xopt:
+  output_path: .
+  verbose: true
+  algorithm: cnsga
+  
+algorithm:
+  name: cnsga
+  function: xopt.cnsga.cnsga
+  options:
+    max_generations: 1000
+    population_size: 316
+    crossover_probability: 0.9
+    mutation_probability: 1.0 
+    selection: auto
+    verbose: true
+    #population: /global/cfs/cdirs/m669/cmayes/bmad_datasets/lcls/sc_csr/v1/pop_X.json
+
+simulation:
+  name: LCLSscTao
+  evaluate: pytao.tao_ctypes.evaluate.evaluate_tao
+  options:
+    input_file: /Users/chrisonian/Code/GitHub/lume-simex-demo-1/models/bmad/tao/tao.init
+    #workdir: /global/cscratch1/sd/cmayes/
+    verbose: true
+    beam_archive_path: .
+    run_commands:  
+      - call scripts/match_COL1.tao   # needed when the BC1 angle changes
+      - call scripts/match_EMIT2.tao  # needed when the BC2 angle changes
+      - set global track_type=beam
+    
+    expressions:
+      - beam::norm_emit.x[ENDBC2B]
+      - beam::norm_emit.y[ENDBC2B]      
+      - beam::sigma.z[ENDBC2B]
+      - beam::sigma.pz[ENDBC2B]
+      - beam::n_particle_loss[ENDBC2B]
+
+
+vocs:
+  name: lume_simex_demo_1
+  description: optimize for CSR 
+  variables:
+    ele:SC_L1:phase_deg: [-40, -20]
+    ele:SC_L1H:phase_deg: [-180, 180]
+    ele:SC_L1H:voltage: [30.0e+6, 60.0e+6]
+    ele:SC_L2:phase_deg: [-50, 0]
+    ele:SC_BC1:angle_deg: [-8.35, -7]
+    ele:SC_BC2:angle_deg: [7, 9.1]
+     
+  objectives:
+    beam::norm_emit.x[ENDBC2B]: MINIMIZE
+    beam::sigma.pz[ENDBC2B]: MINIMIZE
+    
+  constraints:
+    beam::n_particle_loss[ENDBC2B]: ['LESS_THAN', 1]
+    beam::sigma.z[ENDBC2B]: ['LESS_THAN', 6.0e-6]      # 200 fs 
+    beam::sigma.pz[ENDBC2B]: ['LESS_THAN', 1.0e-3]      # 
+    beam::norm_emit.x[ENDBC2B]: ['LESS_THAN', 1.0e-6]  # 1 mm-mrad 
+  
+  constants:
+
+    beam:beam_saved_at:  BEGBC1B,ENDBC1B,BEGBC2B,ENDBC2B
+    beam:beam_track_end: ENDBC2B
+    
+    # CSR 
+    ele:BEGBC1B:ENDBC1B:CSR_METHOD: 1_Dim
+    ele:BEGBC2B:ENDBC2B:CSR_METHOD: 1_Dim  
+    csr_param:n_bin: 100
+    csr_param:ds_track_step: 0.01
+    bmad_com:csr_and_space_charge_on: True
+    
+    # Bunch
+    beam_init:n_particle: 10000

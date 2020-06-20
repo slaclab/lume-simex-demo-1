@@ -1,0 +1,13 @@
+
+use var linac
+set var linac|key_bound=T
+set var linac|key_delta = 0.1
+
+!call scripts/PlotBeam4.tao
+call PlotBeam4.tao
+snparticle 100
+beamon
+sc
+
+
+

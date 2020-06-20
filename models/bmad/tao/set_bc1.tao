@@ -1,0 +1,7 @@
+vv
+vd
+use dat r56[2]
+set dat r56[2]|meas = 45e-3
+use var bc[1]
+olmdif
+run

@@ -1,0 +1,6 @@
+vv
+vd
+use var begtwiss[1:4]
+use dat astra.endtwiss[1:4]
+olmdif
+
